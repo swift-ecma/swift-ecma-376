@@ -21,6 +21,7 @@ extension ECMA_376.Spreadsheet {
             stored.flatMap { Int($0) }.flatMap { index in
                 strings.indices.contains(index) ? ECMA_376.Spreadsheet.Cell.Value.text(strings[index]) : nil
             }
+
         case "inlineStr": element.child("is").map { .text(Self.text($0)) }
         case "str": stored.map { .text($0) }
         case "b": stored.map { .boolean($0 == "1") }

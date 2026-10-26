@@ -55,7 +55,8 @@ extension ECMA_376.Wordprocessing {
 
     static func alternatives(_ element: W3C_XML.Element) -> [W3C_XML.Element] {
         guard element.name.local == "AlternateContent" else { return element.children }
-        return (element.children.first { $0.name.local == "Choice" }
+        return
+            (element.children.first { $0.name.local == "Choice" }
             ?? element.children.first { $0.name.local == "Fallback" }).map { [$0] } ?? []
     }
 }

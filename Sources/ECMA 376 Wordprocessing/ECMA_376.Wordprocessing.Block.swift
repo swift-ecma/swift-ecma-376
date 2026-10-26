@@ -12,6 +12,7 @@ extension ECMA_376.Wordprocessing.Block {
         switch self {
         case .paragraph(let paragraph):
             [paragraph] + paragraph.textboxes.flatMap { $0.flatMap(\.paragraphs) }
+
         case .table(let table):
             table.rows.flatMap { $0.cells.flatMap { $0.blocks.flatMap(\.paragraphs) } }
         }

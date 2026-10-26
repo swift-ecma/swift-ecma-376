@@ -38,18 +38,19 @@ extension ECMA_376.Wordprocessing.Document.Test {
                 + "Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/\(relationship.kind)\" "
                 + "Target=\"\(relationship.target)\"/>"
         }.joined()
-        let entries = [
-            (path: "_rels/.rels", content: Self.main),
-            (
-                path: "word/document.xml",
-                content: "<w:document \(Self.namespaces)><w:body>\(body)</w:body></w:document>"
-            ),
-            (
-                path: "word/_rels/document.xml.rels",
-                content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
-                    + listed + "</Relationships>"
-            ),
-        ] + parts
+        let entries =
+            [
+                (path: "_rels/.rels", content: Self.main),
+                (
+                    path: "word/document.xml",
+                    content: "<w:document \(Self.namespaces)><w:body>\(body)</w:body></w:document>"
+                ),
+                (
+                    path: "word/_rels/document.xml.rels",
+                    content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                        + listed + "</Relationships>"
+                ),
+            ] + parts
         let archive = entries.reduce(into: ISO_21320.Archive()) { archive, entry in
             archive.add(path: entry.path, content: entry.content)
         }
@@ -73,12 +74,14 @@ extension ECMA_376.Wordprocessing.Document.Test.Unit {
             <w:p><w:del><w:r><w:delText>weg</w:delText></w:r></w:del><w:r><w:instrText>PAGE</w:instrText></w:r></w:p>
             """
         )
-        #expect(ECMA_376.Wordprocessing.Document.Test.texts(document.body) == [
-            "Voorbeeld B.V.",
-            "Factuurdatum: 3 oktober 2026",
-            "Bedrag\t€ 12,00 & btw\nBetaal vóór 1 november",
-            "",
-        ])
+        #expect(
+            ECMA_376.Wordprocessing.Document.Test.texts(document.body) == [
+                "Voorbeeld B.V.",
+                "Factuurdatum: 3 oktober 2026",
+                "Bedrag\t€ 12,00 & btw\nBetaal vóór 1 november",
+                "",
+            ]
+        )
         #expect(document.body.last?.paragraphs.first?.runs.flatMap(\.content) == [.deletedText("weg"), .fieldCode("PAGE")])
     }
 

@@ -26,27 +26,29 @@ extension ECMA_376.Spreadsheet.Workbook.Test {
         let related = sheets.enumerated().map { index, sheet in
             "<Relationship Id=\"rId\(index + 1)\" Type=\"\(base)\(sheet.kind)\" Target=\"\(sheet.target)\"/>"
         }.joined()
-        let shared = strings.map { _ in
-            "<Relationship Id=\"rIdStrings\" Type=\"\(base)sharedStrings\" Target=\"sharedStrings.xml\"/>"
-        } ?? ""
-        let entries = [
-            (
-                path: "_rels/.rels",
-                content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
-                    + "<Relationship Id=\"rId1\" Type=\"\(base)officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>"
-            ),
-            (
-                path: "xl/workbook.xml",
-                content: "<workbook xmlns=\"\(Self.namespace)\" "
-                    + "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"
-                    + "<sheets>\(listed)</sheets></workbook>"
-            ),
-            (
-                path: "xl/_rels/workbook.xml.rels",
-                content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
-                    + related + shared + "</Relationships>"
-            ),
-        ] + (strings.map { [(path: "xl/sharedStrings.xml", content: $0)] } ?? []) + parts
+        let shared =
+            strings.map { _ in
+                "<Relationship Id=\"rIdStrings\" Type=\"\(base)sharedStrings\" Target=\"sharedStrings.xml\"/>"
+            } ?? ""
+        let entries =
+            [
+                (
+                    path: "_rels/.rels",
+                    content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                        + "<Relationship Id=\"rId1\" Type=\"\(base)officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>"
+                ),
+                (
+                    path: "xl/workbook.xml",
+                    content: "<workbook xmlns=\"\(Self.namespace)\" "
+                        + "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">"
+                        + "<sheets>\(listed)</sheets></workbook>"
+                ),
+                (
+                    path: "xl/_rels/workbook.xml.rels",
+                    content: "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">"
+                        + related + shared + "</Relationships>"
+                ),
+            ] + (strings.map { [(path: "xl/sharedStrings.xml", content: $0)] } ?? []) + parts
         let archive = entries.reduce(into: ISO_21320.Archive()) { archive, entry in
             archive.add(path: entry.path, content: entry.content)
         }
@@ -91,10 +93,12 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
             ]
         )
         #expect(workbook.sheets.map(\.name) == ["Blad1", "Blad2"])
-        #expect(workbook.sheets[0].rows.map { $0.cells.map(\.value) } == [
-            [.text("Omschrijving"), .text("Bedrag")],
-            [.text("Huur oktober"), .number("1250.5"), .number("2501")],
-        ])
+        #expect(
+            workbook.sheets[0].rows.map { $0.cells.map(\.value) } == [
+                [.text("Omschrijving"), .text("Bedrag")],
+                [.text("Huur oktober"), .number("1250.5"), .number("2501")],
+            ]
+        )
         #expect(workbook.sheets[0].rows[1].cells[2].formula == "B2*2")
         #expect(workbook.sheets[0].rows[1].cells.map(\.reference) == ["A2", "B2", "C2"])
         #expect(workbook.sheets[1].rows.map { $0.cells.map(\.value) } == [[.text("Tiende blad")]])
@@ -116,9 +120,11 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
                 )
             ]
         )
-        #expect(workbook.sheets[0].rows[0].cells.map(\.value) == [
-            .boolean(true), .boolean(false), .error("#DIV/0!"), .date("2026-10-26"), .text("Tweede blad"), .number("42"), nil,
-        ])
+        #expect(
+            workbook.sheets[0].rows[0].cells.map(\.value) == [
+                .boolean(true), .boolean(false), .error("#DIV/0!"), .date("2026-10-26"), .text("Tweede blad"), .number("42"), nil,
+            ]
+        )
     }
 
     @Test func `a workbook without a shared string table is read`() throws {
