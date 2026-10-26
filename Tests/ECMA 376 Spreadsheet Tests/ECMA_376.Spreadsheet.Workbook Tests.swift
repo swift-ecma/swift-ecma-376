@@ -30,7 +30,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test {
             strings.map { _ in
                 "<Relationship Id=\"rIdStrings\" Type=\"\(base)sharedStrings\" Target=\"sharedStrings.xml\"/>"
             } ?? ""
-        let entries =
+        let entries: [(path: String, content: String)] =
             [
                 (
                     path: "_rels/.rels",

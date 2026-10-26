@@ -38,7 +38,7 @@ extension ECMA_376.Wordprocessing.Document.Test {
                 + "Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/\(relationship.kind)\" "
                 + "Target=\"\(relationship.target)\"/>"
         }.joined()
-        let entries =
+        let entries: [(path: String, content: String)] =
             [
                 (path: "_rels/.rels", content: Self.main),
                 (

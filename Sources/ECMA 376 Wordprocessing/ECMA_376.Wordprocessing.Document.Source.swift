@@ -1,4 +1,4 @@
-public import ECMA_376
+import ECMA_376
 import W3C_XML
 
 extension ECMA_376.Wordprocessing.Document {
