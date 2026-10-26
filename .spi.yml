@@ -1,0 +1,7 @@
+version: 1
+builder:
+  configs:
+  - documentation_targets:
+    - ECMA 376
+    - ECMA 376 WordprocessingML
+    - ECMA 376 SpreadsheetML
