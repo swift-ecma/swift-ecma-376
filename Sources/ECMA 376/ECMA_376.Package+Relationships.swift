@@ -1,6 +1,4 @@
 extension ECMA_376.Package {
-    /// The relationships of `source`, the package itself (``ECMA_376/Part/Name/root``) or one of its parts, in the
-    /// order its relationships part lists them; none when it has no relationships part.
     public func relationships(
         of source: ECMA_376.Part.Name
     ) throws(ECMA_376.Package.Error) -> [ECMA_376.Relationship] {
@@ -19,18 +17,17 @@ extension ECMA_376.Package {
                 id: id,
                 type: type,
                 target: target,
-                isExternal: element.attribute("TargetMode") == "External"
+                mode: element.attribute("TargetMode") == "External" ? .external : .internal
             )
         }
     }
 
-    /// The part that the first internal relationship of `kind` from `source` targets.
     public func target(
         of kind: ECMA_376.Relationship.Kind,
         from source: ECMA_376.Part.Name
     ) throws(ECMA_376.Package.Error) -> ECMA_376.Part.Name {
         guard
-            let relationship = try relationships(of: source).first(where: { $0.kind == kind && !$0.isExternal })
+            let relationship = try relationships(of: source).first(where: { $0.kind == kind && $0.mode == .internal })
         else { throw .relationship(kind) }
         return try source.resolve(relationship.target)
     }

@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "ECMA 376", targets: ["ECMA 376"]),
-        .library(name: "ECMA 376 WordprocessingML", targets: ["ECMA 376 WordprocessingML"]),
-        .library(name: "ECMA 376 SpreadsheetML", targets: ["ECMA 376 SpreadsheetML"]),
+        .library(name: "ECMA 376 Wordprocessing", targets: ["ECMA 376 Wordprocessing"]),
+        .library(name: "ECMA 376 Spreadsheet", targets: ["ECMA 376 Spreadsheet"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
@@ -23,8 +23,6 @@ let package = Package(
         .package(url: "https://github.com/swift-w3c/swift-w3c-xml.git", branch: "main"),
     ],
     targets: [
-        // Part 2, the Open Packaging Conventions: a document's parts in their ZIP archive, and the relationships
-        // between them.
         .target(
             name: "ECMA 376",
             dependencies: [
@@ -34,17 +32,15 @@ let package = Package(
                 .product(name: "W3C XML", package: "swift-w3c-xml"),
             ]
         ),
-        // Part 1 §17, WordprocessingML: a document's body, headers and footers as paragraphs and tables.
         .target(
-            name: "ECMA 376 WordprocessingML",
+            name: "ECMA 376 Wordprocessing",
             dependencies: [
                 .target(name: "ECMA 376"),
                 .product(name: "W3C XML", package: "swift-w3c-xml"),
             ]
         ),
-        // Part 1 §18, SpreadsheetML: a workbook's sheets as rows of cells.
         .target(
-            name: "ECMA 376 SpreadsheetML",
+            name: "ECMA 376 Spreadsheet",
             dependencies: [
                 .target(name: "ECMA 376"),
                 .product(name: "W3C XML", package: "swift-w3c-xml"),
@@ -59,19 +55,19 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "ECMA 376 WordprocessingML Tests",
+            name: "ECMA 376 Wordprocessing Tests",
             dependencies: [
                 .target(name: "ECMA 376"),
-                .target(name: "ECMA 376 WordprocessingML"),
+                .target(name: "ECMA 376 Wordprocessing"),
                 .product(name: "Byte", package: "swift-byte"),
                 .product(name: "ISO 21320", package: "swift-iso-21320"),
             ]
         ),
         .testTarget(
-            name: "ECMA 376 SpreadsheetML Tests",
+            name: "ECMA 376 Spreadsheet Tests",
             dependencies: [
                 .target(name: "ECMA 376"),
-                .target(name: "ECMA 376 SpreadsheetML"),
+                .target(name: "ECMA 376 Spreadsheet"),
                 .product(name: "Byte", package: "swift-byte"),
                 .product(name: "ISO 21320", package: "swift-iso-21320"),
             ]
