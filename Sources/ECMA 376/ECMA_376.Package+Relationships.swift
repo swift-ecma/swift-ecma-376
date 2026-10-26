@@ -1,3 +1,5 @@
+import W3C_XML
+
 extension ECMA_376.Package {
     public func relationships(
         of source: ECMA_376.Part.Name
