@@ -1,11 +1,11 @@
 public import ECMA_376
 import W3C_XML
 
-extension ECMA_376.WordprocessingML {
-    static func blocks(_ container: W3C_XML.Element) -> [ECMA_376.WordprocessingML.Block] {
-        container.children.flatMap { child -> [ECMA_376.WordprocessingML.Block] in
+extension ECMA_376.Wordprocessing {
+    static func blocks(_ container: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Block] {
+        container.children.flatMap { child -> [ECMA_376.Wordprocessing.Block] in
             switch child.name.local {
-            case "p": [.paragraph(ECMA_376.WordprocessingML.Paragraph(runs: Self.runs(child)))]
+            case "p": [.paragraph(ECMA_376.Wordprocessing.Paragraph(runs: Self.runs(child)))]
             case "tbl": [.table(Self.table(child))]
             case "sdt": child.child("sdtContent").map(Self.blocks) ?? []
             case "customXml": Self.blocks(child)
@@ -14,20 +14,20 @@ extension ECMA_376.WordprocessingML {
         }
     }
 
-    static func table(_ element: W3C_XML.Element) -> ECMA_376.WordprocessingML.Table {
-        ECMA_376.WordprocessingML.Table(
+    static func table(_ element: W3C_XML.Element) -> ECMA_376.Wordprocessing.Table {
+        ECMA_376.Wordprocessing.Table(
             rows: element.children("tr").map { row in
-                ECMA_376.WordprocessingML.Table.Row(
-                    cells: row.children("tc").map { ECMA_376.WordprocessingML.Table.Cell(blocks: Self.blocks($0)) }
+                ECMA_376.Wordprocessing.Table.Row(
+                    cells: row.children("tc").map { ECMA_376.Wordprocessing.Table.Cell(blocks: Self.blocks($0)) }
                 )
             }
         )
     }
 
-    static func runs(_ element: W3C_XML.Element) -> [ECMA_376.WordprocessingML.Run] {
-        element.children.flatMap { child -> [ECMA_376.WordprocessingML.Run] in
+    static func runs(_ element: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run] {
+        element.children.flatMap { child -> [ECMA_376.Wordprocessing.Run] in
             switch child.name.local {
-            case "r": [ECMA_376.WordprocessingML.Run(content: child.children.flatMap(Self.content))]
+            case "r": [ECMA_376.Wordprocessing.Run(content: child.children.flatMap(Self.content))]
             case "hyperlink", "ins", "del", "moveTo", "smartTag", "fldSimple", "customXml", "dir", "bdo": Self.runs(child)
             case "sdt": child.child("sdtContent").map(Self.runs) ?? []
             default: []
@@ -35,7 +35,7 @@ extension ECMA_376.WordprocessingML {
         }
     }
 
-    static func content(_ element: W3C_XML.Element) -> [ECMA_376.WordprocessingML.Run.Content] {
+    static func content(_ element: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run.Content] {
         switch element.name.local {
         case "t": [.text(element.textContent)]
         case "tab": [.tab]
@@ -48,7 +48,7 @@ extension ECMA_376.WordprocessingML {
         }
     }
 
-    static func textboxes(_ element: W3C_XML.Element) -> [[ECMA_376.WordprocessingML.Block]] {
+    static func textboxes(_ element: W3C_XML.Element) -> [[ECMA_376.Wordprocessing.Block]] {
         guard element.name.local != "txbxContent" else { return [Self.blocks(element)] }
         return Self.alternatives(element).flatMap(Self.textboxes)
     }

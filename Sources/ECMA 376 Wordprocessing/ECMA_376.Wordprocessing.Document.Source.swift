@@ -1,7 +1,7 @@
 public import ECMA_376
 import W3C_XML
 
-extension ECMA_376.WordprocessingML.Document {
+extension ECMA_376.Wordprocessing.Document {
     struct Source {
         let package: ECMA_376.Package
         let main: ECMA_376.Part.Name
@@ -10,11 +10,11 @@ extension ECMA_376.WordprocessingML.Document {
     }
 }
 
-extension ECMA_376.WordprocessingML.Document.Source {
+extension ECMA_376.Wordprocessing.Document.Source {
     func parts(
         referred element: String,
         root: String
-    ) throws(ECMA_376.Package.Error) -> [[ECMA_376.WordprocessingML.Block]] {
+    ) throws(ECMA_376.Package.Error) -> [[ECMA_376.Wordprocessing.Block]] {
         var names: [ECMA_376.Part.Name] = []
         for id in Self.references(element, in: body) {
             guard let relationship = relationships.first(where: { $0.id == id }) else { throw .unexpected(element) }
@@ -24,7 +24,7 @@ extension ECMA_376.WordprocessingML.Document.Source {
         return try names.map { name throws(ECMA_376.Package.Error) in
             let part = try package.markup(name)
             guard part.name.local == root else { throw .unexpected(part.name.qualified) }
-            return ECMA_376.WordprocessingML.blocks(part)
+            return ECMA_376.Wordprocessing.blocks(part)
         }
     }
 

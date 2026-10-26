@@ -1,6 +1,6 @@
 public import ECMA_376
 
-extension ECMA_376.SpreadsheetML.Cell {
+extension ECMA_376.Spreadsheet.Cell {
     public enum Value: Sendable, Hashable {
         case boolean(Bool)
         case number(String)

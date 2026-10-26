@@ -1,25 +1,25 @@
 public import ECMA_376
 import W3C_XML
 
-extension ECMA_376.SpreadsheetML {
-    static func row(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.SpreadsheetML.Row {
-        ECMA_376.SpreadsheetML.Row(cells: element.children("c").map { Self.cell($0, strings: strings) })
+extension ECMA_376.Spreadsheet {
+    static func row(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Row {
+        ECMA_376.Spreadsheet.Row(cells: element.children("c").map { Self.cell($0, strings: strings) })
     }
 
-    static func cell(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.SpreadsheetML.Cell {
-        ECMA_376.SpreadsheetML.Cell(
+    static func cell(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell {
+        ECMA_376.Spreadsheet.Cell(
             reference: element.attribute("r"),
             value: Self.value(element, strings: strings),
             formula: element.child("f")?.textContent
         )
     }
 
-    static func value(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.SpreadsheetML.Cell.Value? {
+    static func value(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell.Value? {
         let stored = element.child("v")?.textContent
         return switch element.attribute("t") {
         case "s":
             stored.flatMap { Int($0) }.flatMap { index in
-                strings.indices.contains(index) ? ECMA_376.SpreadsheetML.Cell.Value.text(strings[index]) : nil
+                strings.indices.contains(index) ? ECMA_376.Spreadsheet.Cell.Value.text(strings[index]) : nil
             }
         case "inlineStr": element.child("is").map { .text(Self.text($0)) }
         case "str": stored.map { .text($0) }

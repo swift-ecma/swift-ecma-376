@@ -1,6 +1,6 @@
 public import ECMA_376
 
-extension ECMA_376.WordprocessingML.Run {
+extension ECMA_376.Wordprocessing.Run {
     public enum Content: Sendable, Hashable {
         case text(String)
         case tab
@@ -8,11 +8,11 @@ extension ECMA_376.WordprocessingML.Run {
         case carriageReturn
         case deletedText(String)
         case fieldCode(String)
-        case textbox([ECMA_376.WordprocessingML.Block])
+        case textbox([ECMA_376.Wordprocessing.Block])
     }
 }
 
-extension ECMA_376.WordprocessingML.Run.Content {
+extension ECMA_376.Wordprocessing.Run.Content {
     public var text: String {
         switch self {
         case .text(let text): text
@@ -22,7 +22,7 @@ extension ECMA_376.WordprocessingML.Run.Content {
         }
     }
 
-    public var textbox: [ECMA_376.WordprocessingML.Block]? {
+    public var textbox: [ECMA_376.Wordprocessing.Block]? {
         guard case .textbox(let blocks) = self else { return nil }
         return blocks
     }

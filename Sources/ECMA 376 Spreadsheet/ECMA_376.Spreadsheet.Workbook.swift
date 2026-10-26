@@ -1,17 +1,17 @@
 public import ECMA_376
 import W3C_XML
 
-extension ECMA_376.SpreadsheetML {
+extension ECMA_376.Spreadsheet {
     public struct Workbook: Sendable, Hashable {
-        public var sheets: [ECMA_376.SpreadsheetML.Worksheet]
+        public var sheets: [ECMA_376.Spreadsheet.Worksheet]
 
-        public init(sheets: [ECMA_376.SpreadsheetML.Worksheet]) {
+        public init(sheets: [ECMA_376.Spreadsheet.Worksheet]) {
             self.sheets = sheets
         }
     }
 }
 
-extension ECMA_376.SpreadsheetML.Workbook {
+extension ECMA_376.Spreadsheet.Workbook {
     public init(_ package: ECMA_376.Package) throws(ECMA_376.Package.Error) {
         let main = try package.target(of: .officeDocument, from: .root)
         let workbook = try package.markup(main)
@@ -19,7 +19,7 @@ extension ECMA_376.SpreadsheetML.Workbook {
         let relationships = try package.relationships(of: main)
         let strings = try Self.strings(in: package, from: main, relationships: relationships)
         let sheets = try (workbook.child("sheets")?.children("sheet") ?? []).map {
-            sheet throws(ECMA_376.Package.Error) -> ECMA_376.SpreadsheetML.Worksheet? in
+            sheet throws(ECMA_376.Package.Error) -> ECMA_376.Spreadsheet.Worksheet? in
             guard
                 let name = sheet.attribute("name"),
                 let id = sheet.attribute(local: "id"),
@@ -28,10 +28,10 @@ extension ECMA_376.SpreadsheetML.Workbook {
             guard relationship.kind == .worksheet else { return nil }
             let worksheet = try package.markup(try main.resolve(relationship.target))
             guard worksheet.name.local == "worksheet" else { throw .unexpected(worksheet.name.qualified) }
-            return ECMA_376.SpreadsheetML.Worksheet(
+            return ECMA_376.Spreadsheet.Worksheet(
                 name: name,
                 rows: (worksheet.child("sheetData")?.children("row") ?? []).map {
-                    ECMA_376.SpreadsheetML.row($0, strings: strings)
+                    ECMA_376.Spreadsheet.row($0, strings: strings)
                 }
             )
         }
@@ -48,6 +48,6 @@ extension ECMA_376.SpreadsheetML.Workbook {
         }
         let table = try package.markup(try main.resolve(shared.target))
         guard table.name.local == "sst" else { throw .unexpected(table.name.qualified) }
-        return table.children("si").map(ECMA_376.SpreadsheetML.text)
+        return table.children("si").map(ECMA_376.Spreadsheet.text)
     }
 }

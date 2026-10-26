@@ -1,14 +1,14 @@
 public import ECMA_376
 
-extension ECMA_376.WordprocessingML {
+extension ECMA_376.Wordprocessing {
     public enum Block: Sendable, Hashable {
-        case paragraph(ECMA_376.WordprocessingML.Paragraph)
-        case table(ECMA_376.WordprocessingML.Table)
+        case paragraph(ECMA_376.Wordprocessing.Paragraph)
+        case table(ECMA_376.Wordprocessing.Table)
     }
 }
 
-extension ECMA_376.WordprocessingML.Block {
-    public var paragraphs: [ECMA_376.WordprocessingML.Paragraph] {
+extension ECMA_376.Wordprocessing.Block {
+    public var paragraphs: [ECMA_376.Wordprocessing.Paragraph] {
         switch self {
         case .paragraph(let paragraph):
             [paragraph] + paragraph.textboxes.flatMap { $0.flatMap(\.paragraphs) }
