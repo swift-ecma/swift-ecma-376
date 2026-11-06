@@ -4,14 +4,16 @@ import ECMA_376_Spreadsheet
 import ISO_21320
 import Testing
 
-extension ECMA_376.Spreadsheet.Workbook {
+enum `ECMA_376.Spreadsheet.Workbook Tests` {}
+
+extension `ECMA_376.Spreadsheet.Workbook Tests` {
     @Suite struct Test {
         @Suite struct Unit {}
         @Suite struct `Edge Case` {}
     }
 }
 
-extension ECMA_376.Spreadsheet.Workbook.Test {
+extension `ECMA_376.Spreadsheet.Workbook Tests`.Test {
     static let namespace = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 
     static func workbook(
@@ -60,7 +62,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test {
     }
 }
 
-extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
+extension `ECMA_376.Spreadsheet.Workbook Tests`.Test.Unit {
     @Test func `sheets are read in the workbook's order, rows of cells with shared strings in place`() throws {
         let strings = """
             <sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="3" uniqueCount="3">\
@@ -68,7 +70,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
             <si><r><t xml:space="preserve">Huur </t></r><r><t>oktober</t></r><rPh sb="0" eb="1"><t>uitspraak</t></rPh></si>\
             </sst>
             """
-        let workbook = try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+        let workbook = try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
             sheets: [
                 ("Blad1", "worksheet", "worksheets/sheet1.xml"),
                 ("Blad2", "worksheet", "worksheets/sheet10.xml"),
@@ -77,7 +79,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
             parts: [
                 (
                     "xl/worksheets/sheet1.xml",
-                    ECMA_376.Spreadsheet.Workbook.Test.sheet(
+                    `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet(
                         """
                         <row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1" t="s"><v>1</v></c></row>\
                         <row r="2"><c r="A2" t="s"><v>2</v></c><c r="B2" s="1"><v>1250.5</v></c><c r="C2"><f>B2*2</f><v>2501</v></c></row>
@@ -86,7 +88,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
                 ),
                 (
                     "xl/worksheets/sheet10.xml",
-                    ECMA_376.Spreadsheet.Workbook.Test.sheet(
+                    `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet(
                         "<row r=\"1\"><c r=\"A1\" t=\"inlineStr\"><is><t>Tiende blad</t></is></c></row>"
                     )
                 ),
@@ -105,12 +107,12 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
     }
 
     @Test func `a cell's value carries its type`() throws {
-        let workbook = try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+        let workbook = try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
             sheets: [("Blad1", "worksheet", "worksheets/sheet1.xml")],
             parts: [
                 (
                     "xl/worksheets/sheet1.xml",
-                    ECMA_376.Spreadsheet.Workbook.Test.sheet(
+                    `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet(
                         """
                         <row r="1"><c r="A1" t="b"><v>1</v></c><c r="B1" t="b"><v>0</v></c><c r="C1" t="e"><v>#DIV/0!</v></c>\
                         <c r="D1" t="d"><v>2026-10-26</v></c><c r="E1" t="str"><f>"Tweede"</f><v>Tweede blad</v></c>\
@@ -128,12 +130,12 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
     }
 
     @Test func `a workbook without a shared string table is read`() throws {
-        let workbook = try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+        let workbook = try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
             sheets: [("Blad1", "worksheet", "worksheets/sheet1.xml")],
             parts: [
                 (
                     "xl/worksheets/sheet1.xml",
-                    ECMA_376.Spreadsheet.Workbook.Test.sheet("<row r=\"1\"><c r=\"A1\"><v>42</v></c></row>")
+                    `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet("<row r=\"1\"><c r=\"A1\"><v>42</v></c></row>")
                 )
             ]
         )
@@ -141,29 +143,29 @@ extension ECMA_376.Spreadsheet.Workbook.Test.Unit {
     }
 }
 
-extension ECMA_376.Spreadsheet.Workbook.Test.`Edge Case` {
+extension `ECMA_376.Spreadsheet.Workbook Tests`.Test.`Edge Case` {
     @Test func `a sheet that is no worksheet is left out`() throws {
-        let workbook = try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+        let workbook = try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
             sheets: [
                 ("Grafiek", "chartsheet", "chartsheets/sheet1.xml"),
                 ("Blad1", "worksheet", "worksheets/sheet1.xml"),
             ],
             parts: [
-                ("xl/chartsheets/sheet1.xml", "<chartsheet xmlns=\"\(ECMA_376.Spreadsheet.Workbook.Test.namespace)\"/>"),
-                ("xl/worksheets/sheet1.xml", ECMA_376.Spreadsheet.Workbook.Test.sheet("")),
+                ("xl/chartsheets/sheet1.xml", "<chartsheet xmlns=\"\(`ECMA_376.Spreadsheet.Workbook Tests`.Test.namespace)\"/>"),
+                ("xl/worksheets/sheet1.xml", `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet("")),
             ]
         )
         #expect(workbook.sheets.map(\.name) == ["Blad1"])
     }
 
     @Test func `a shared string index beyond the table has no value`() throws {
-        let workbook = try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+        let workbook = try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
             sheets: [("Blad1", "worksheet", "worksheets/sheet1.xml")],
-            strings: "<sst xmlns=\"\(ECMA_376.Spreadsheet.Workbook.Test.namespace)\"><si><t>Een</t></si></sst>",
+            strings: "<sst xmlns=\"\(`ECMA_376.Spreadsheet.Workbook Tests`.Test.namespace)\"><si><t>Een</t></si></sst>",
             parts: [
                 (
                     "xl/worksheets/sheet1.xml",
-                    ECMA_376.Spreadsheet.Workbook.Test.sheet("<row r=\"1\"><c r=\"A1\" t=\"s\"><v>7</v></c></row>")
+                    `ECMA_376.Spreadsheet.Workbook Tests`.Test.sheet("<row r=\"1\"><c r=\"A1\" t=\"s\"><v>7</v></c></row>")
                 )
             ]
         )
@@ -172,7 +174,7 @@ extension ECMA_376.Spreadsheet.Workbook.Test.`Edge Case` {
 
     @Test func `a worksheet part with another root element is refused by that element`() {
         #expect(throws: ECMA_376.Package.Error.unexpected("styleSheet")) {
-            try ECMA_376.Spreadsheet.Workbook.Test.workbook(
+            try `ECMA_376.Spreadsheet.Workbook Tests`.Test.workbook(
                 sheets: [("Blad1", "worksheet", "worksheets/sheet1.xml")],
                 parts: [("xl/worksheets/sheet1.xml", "<styleSheet/>")]
             )

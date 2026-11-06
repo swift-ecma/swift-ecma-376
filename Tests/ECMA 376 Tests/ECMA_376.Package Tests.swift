@@ -3,14 +3,16 @@ import ECMA_376
 import ISO_21320
 import Testing
 
-extension ECMA_376.Package {
+enum `ECMA_376.Package Tests` {}
+
+extension `ECMA_376.Package Tests` {
     @Suite struct Test {
         @Suite struct Unit {}
         @Suite struct `Edge Case` {}
     }
 }
 
-extension ECMA_376.Package.Test {
+extension `ECMA_376.Package Tests`.Test {
     static func package(_ parts: [(path: String, content: String)]) throws(ECMA_376.Package.Error) -> ECMA_376.Package {
         let archive = parts.reduce(into: ISO_21320.Archive()) { archive, part in
             archive.add(path: part.path, content: part.content)
@@ -32,9 +34,9 @@ extension ECMA_376.Package.Test {
         """
 }
 
-extension ECMA_376.Package.Test.Unit {
+extension `ECMA_376.Package Tests`.Test.Unit {
     @Test func `a part is found by its name, compared without regard to case`() throws {
-        let package = try ECMA_376.Package.Test.package([("word/document.xml", "<w:document/>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("word/document.xml", "<w:document/>")])
         #expect(try package.part(ECMA_376.Part.Name("/Word/Document.XML")) == [Byte](utf8: "<w:document/>"))
         #expect(package.names == [ECMA_376.Part.Name("/word/document.xml")])
     }
@@ -53,7 +55,7 @@ extension ECMA_376.Package.Test.Unit {
     }
 
     @Test func `relationships are read in order, with their kind in Transitional and Strict, and their mode`() throws {
-        let package = try ECMA_376.Package.Test.package([("_rels/.rels", ECMA_376.Package.Test.relationships)])
+        let package = try `ECMA_376.Package Tests`.Test.package([("_rels/.rels", `ECMA_376.Package Tests`.Test.relationships)])
         let relationships = try package.relationships(of: .root)
         #expect(relationships.map(\.id) == ["rId1", "rId2", "rId3", "rId4"])
         #expect(relationships.map(\.kind) == [.officeDocument, .header, ECMA_376.Relationship.Kind("hyperlink"), nil])
@@ -61,26 +63,26 @@ extension ECMA_376.Package.Test.Unit {
     }
 
     @Test func `a package's main part is the target of its office document relationship`() throws {
-        let package = try ECMA_376.Package.Test.package([("_rels/.rels", ECMA_376.Package.Test.relationships)])
+        let package = try `ECMA_376.Package Tests`.Test.package([("_rels/.rels", `ECMA_376.Package Tests`.Test.relationships)])
         #expect(try package.target(of: .officeDocument, from: .root) == ECMA_376.Part.Name("/word/document.xml"))
     }
 }
 
-extension ECMA_376.Package.Test.`Edge Case` {
+extension `ECMA_376.Package Tests`.Test.`Edge Case` {
     @Test func `a part without a relationships part has no relationships`() throws {
-        let package = try ECMA_376.Package.Test.package([("word/document.xml", "<w:document/>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("word/document.xml", "<w:document/>")])
         #expect(try package.relationships(of: ECMA_376.Part.Name("/word/document.xml")).isEmpty)
     }
 
     @Test func `a missing part is reported by its name`() throws {
-        let package = try ECMA_376.Package.Test.package([("word/document.xml", "<w:document/>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("word/document.xml", "<w:document/>")])
         #expect(throws: ECMA_376.Package.Error.missing(ECMA_376.Part.Name("/word/styles.xml"))) {
             try package.part(ECMA_376.Part.Name("word/styles.xml"))
         }
     }
 
     @Test func `a package without the relationship a format requires reports the relationship's kind`() throws {
-        let package = try ECMA_376.Package.Test.package([("word/document.xml", "<w:document/>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("word/document.xml", "<w:document/>")])
         #expect(throws: ECMA_376.Package.Error.relationship(.officeDocument)) {
             try package.target(of: .officeDocument, from: .root)
         }
@@ -93,14 +95,14 @@ extension ECMA_376.Package.Test.`Edge Case` {
     }
 
     @Test func `a relationships part that is no well-formed XML is refused`() throws {
-        let package = try ECMA_376.Package.Test.package([("_rels/.rels", "<Relationships>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("_rels/.rels", "<Relationships>")])
         #expect(throws: ECMA_376.Package.Error.self) {
             try package.relationships(of: .root)
         }
     }
 
     @Test func `a relationships part with another root element is refused by that element`() throws {
-        let package = try ECMA_376.Package.Test.package([("_rels/.rels", "<Types/>")])
+        let package = try `ECMA_376.Package Tests`.Test.package([("_rels/.rels", "<Types/>")])
         #expect(throws: ECMA_376.Package.Error.unexpected("Types")) {
             try package.relationships(of: .root)
         }
