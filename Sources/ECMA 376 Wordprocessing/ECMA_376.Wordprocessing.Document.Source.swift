@@ -5,7 +5,7 @@ extension ECMA_376.Wordprocessing.Document {
     struct Source {
         let package: ECMA_376.Package
         let main: ECMA_376.Part.Name
-        let body: W3C_XML::Element
+        let body: W3C_XML.Element
         let relationships: [ECMA_376.Relationship]
     }
 }
@@ -28,7 +28,7 @@ extension ECMA_376.Wordprocessing.Document.Source {
         }
     }
 
-    static func references(_ name: String, in element: W3C_XML::Element) -> [String] {
+    static func references(_ name: String, in element: W3C_XML.Element) -> [String] {
         element.children.flatMap { child in
             child.name.local == name
                 ? child.attribute(local: "id").map { [$0] } ?? []
