@@ -1,5 +1,5 @@
 public import ISO_21320
-public import W3C_XML
+import W3C_XML
 
 extension ECMA_376.Package {
     public enum Error: Swift::Error, Sendable, Equatable {
