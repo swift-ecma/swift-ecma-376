@@ -2,7 +2,7 @@ import ECMA_376
 import W3C_XML
 
 extension ECMA_376.Wordprocessing {
-    static func blocks(_ container: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Block] {
+    static func blocks(_ container: W3C_XML::W3C_XML.Element) -> [ECMA_376.Wordprocessing.Block] {
         container.children.flatMap { child -> [ECMA_376.Wordprocessing.Block] in
             switch child.name.local {
             case "p": [.paragraph(ECMA_376.Wordprocessing.Paragraph(runs: Self.runs(child)))]
@@ -14,7 +14,7 @@ extension ECMA_376.Wordprocessing {
         }
     }
 
-    static func table(_ element: W3C_XML.Element) -> ECMA_376.Wordprocessing.Table {
+    static func table(_ element: W3C_XML::W3C_XML.Element) -> ECMA_376.Wordprocessing.Table {
         ECMA_376.Wordprocessing.Table(
             rows: element.children("tr").map { row in
                 ECMA_376.Wordprocessing.Table.Row(
@@ -24,7 +24,7 @@ extension ECMA_376.Wordprocessing {
         )
     }
 
-    static func runs(_ element: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run] {
+    static func runs(_ element: W3C_XML::W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run] {
         element.children.flatMap { child -> [ECMA_376.Wordprocessing.Run] in
             switch child.name.local {
             case "r": [ECMA_376.Wordprocessing.Run(content: child.children.flatMap(Self.content))]
@@ -35,7 +35,7 @@ extension ECMA_376.Wordprocessing {
         }
     }
 
-    static func content(_ element: W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run.Content] {
+    static func content(_ element: W3C_XML::W3C_XML.Element) -> [ECMA_376.Wordprocessing.Run.Content] {
         switch element.name.local {
         case "t": [.text(element.textContent)]
         case "tab": [.tab]
@@ -48,12 +48,12 @@ extension ECMA_376.Wordprocessing {
         }
     }
 
-    static func textboxes(_ element: W3C_XML.Element) -> [[ECMA_376.Wordprocessing.Block]] {
+    static func textboxes(_ element: W3C_XML::W3C_XML.Element) -> [[ECMA_376.Wordprocessing.Block]] {
         guard element.name.local != "txbxContent" else { return [Self.blocks(element)] }
         return Self.alternatives(element).flatMap(Self.textboxes)
     }
 
-    static func alternatives(_ element: W3C_XML.Element) -> [W3C_XML.Element] {
+    static func alternatives(_ element: W3C_XML::W3C_XML.Element) -> [W3C_XML::W3C_XML.Element] {
         guard element.name.local == "AlternateContent" else { return element.children }
         return
             (element.children.first { $0.name.local == "Choice" }
