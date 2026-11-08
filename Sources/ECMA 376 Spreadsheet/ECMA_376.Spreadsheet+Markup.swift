@@ -2,11 +2,11 @@ import ECMA_376
 import W3C_XML
 
 extension ECMA_376.Spreadsheet {
-    static func row(_ element: W3C_XML::Element, strings: [String]) -> ECMA_376.Spreadsheet.Row {
+    static func row(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Row {
         ECMA_376.Spreadsheet.Row(cells: element.children("c").map { Self.cell($0, strings: strings) })
     }
 
-    static func cell(_ element: W3C_XML::Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell {
+    static func cell(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell {
         ECMA_376.Spreadsheet.Cell(
             reference: element.attribute("r"),
             value: Self.value(element, strings: strings),
@@ -14,7 +14,7 @@ extension ECMA_376.Spreadsheet {
         )
     }
 
-    static func value(_ element: W3C_XML::Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell.Value? {
+    static func value(_ element: W3C_XML.Element, strings: [String]) -> ECMA_376.Spreadsheet.Cell.Value? {
         let stored = element.child("v")?.textContent
         return switch element.attribute("t") {
         case "s":
@@ -31,7 +31,7 @@ extension ECMA_376.Spreadsheet {
         }
     }
 
-    static func text(_ element: W3C_XML::Element) -> String {
+    static func text(_ element: W3C_XML.Element) -> String {
         element.children.map { child in
             switch child.name.local {
             case "t": child.textContent
