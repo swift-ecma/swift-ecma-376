@@ -14,11 +14,15 @@ extension ECMA_376.Part.Name {
 
 extension ECMA_376.Part.Name: Hashable {
     public static func == (lhs: ECMA_376.Part.Name, rhs: ECMA_376.Part.Name) -> Bool {
-        lhs.value.lowercased() == rhs.value.lowercased()
+        lhs.folded.elementsEqual(rhs.folded)
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(value.lowercased())
+        for byte in folded { hasher.combine(byte) }
+    }
+
+    private var folded: some Sequence<UInt8> {
+        value.utf8.lazy.map { (0x41...0x5A).contains($0) ? $0 | 0x20 : $0 }
     }
 }
 

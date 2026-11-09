@@ -108,3 +108,13 @@ extension `ECMA_376.Package Tests`.Test.`Edge Case` {
         }
     }
 }
+
+extension `ECMA_376.Package Tests`.Test.`Edge Case` {
+    @Test func `part names fold only ASCII letters when compared`() {
+        #expect(ECMA_376.Part.Name("/word/Document.xml") == ECMA_376.Part.Name("/WORD/document.XML"))
+        #expect(Set([ECMA_376.Part.Name("/word/Document.xml"), ECMA_376.Part.Name("/WORD/document.XML")]).count == 1)
+        #expect(ECMA_376.Part.Name("/\u{C9}.xml") != ECMA_376.Part.Name("/\u{E9}.xml"))
+        #expect(ECMA_376.Part.Name("/\u{212A}.xml") != ECMA_376.Part.Name("/k.xml"))
+        #expect(Set([ECMA_376.Part.Name("/\u{C9}.xml"), ECMA_376.Part.Name("/\u{E9}.xml")]).count == 2)
+    }
+}
