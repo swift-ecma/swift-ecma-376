@@ -14,8 +14,13 @@ extension `ECMA_376.Package Tests` {
 
 extension `ECMA_376.Package Tests`.Test {
     static func package(_ parts: [(path: String, content: String)]) throws(ECMA_376.Package.Error) -> ECMA_376.Package {
-        let archive = parts.reduce(into: ISO_21320.Archive()) { archive, part in
-            archive.add(path: part.path, content: part.content)
+        var archive = ISO_21320.Archive()
+        for part in parts {
+            do throws(ISO_21320.Archive.Error) {
+                try archive.add(path: part.path, content: part.content)
+            } catch {
+                preconditionFailure("fixture entry \(part.path) is not archivable: \(error)")
+            }
         }
         return try ECMA_376.Package(archive.finalize().map(Byte.init(bitPattern:)))
     }

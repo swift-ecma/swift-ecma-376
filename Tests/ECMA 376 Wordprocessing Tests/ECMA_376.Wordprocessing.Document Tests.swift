@@ -53,8 +53,13 @@ extension `ECMA_376.Wordprocessing.Document Tests`.Test {
                         + listed + "</Relationships>"
                 ),
             ] + parts
-        let archive = entries.reduce(into: ISO_21320.Archive()) { archive, entry in
-            archive.add(path: entry.path, content: entry.content)
+        var archive = ISO_21320.Archive()
+        for entry in entries {
+            do throws(ISO_21320.Archive.Error) {
+                try archive.add(path: entry.path, content: entry.content)
+            } catch {
+                preconditionFailure("fixture entry \(entry.path) is not archivable: \(error)")
+            }
         }
         return try ECMA_376.Wordprocessing.Document(
             ECMA_376.Package(archive.finalize().map(Byte.init(bitPattern:)))
@@ -168,11 +173,16 @@ extension `ECMA_376.Wordprocessing.Document Tests`.Test.`Edge Case` {
     }
 
     @Test func `a main part that is no document is refused by its root element`() throws {
-        let archive = [
+        var archive = ISO_21320.Archive()
+        for entry in [
             (path: "_rels/.rels", content: `ECMA_376.Wordprocessing.Document Tests`.Test.main),
             (path: "word/document.xml", content: "<w:styles xmlns:w=\"urn:w\"/>"),
-        ].reduce(into: ISO_21320.Archive()) { archive, entry in
-            archive.add(path: entry.path, content: entry.content)
+        ] {
+            do throws(ISO_21320.Archive.Error) {
+                try archive.add(path: entry.path, content: entry.content)
+            } catch {
+                preconditionFailure("fixture entry \(entry.path) is not archivable: \(error)")
+            }
         }
         let package = try ECMA_376.Package(archive.finalize().map(Byte.init(bitPattern:)))
         #expect(throws: ECMA_376.Package.Error.unexpected("w:styles")) {
