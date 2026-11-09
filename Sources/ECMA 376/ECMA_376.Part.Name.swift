@@ -21,7 +21,7 @@ extension ECMA_376.Part.Name: Hashable {
         for byte in folded { hasher.combine(byte) }
     }
 
-    private var folded: some Sequence<UInt8> {
+    private var folded: some Swift::Sequence<UInt8> {
         value.utf8.lazy.map { (0x41...0x5A).contains($0) ? $0 | 0x20 : $0 }
     }
 }
