@@ -53,9 +53,9 @@ extension `ECMA_376.Wordprocessing.Document Tests`.Test {
                         + listed + "</Relationships>"
                 ),
             ] + parts
-        var archive = ISO_21320.Archive()
+        var archive = ISO.`21320`.Archive()
         for entry in entries {
-            do throws(ISO_21320.Archive.Error) {
+            do throws(ISO.`21320`.Archive.Error) {
                 try archive.add(path: entry.path, content: entry.content)
             } catch {
                 preconditionFailure("fixture entry \(entry.path) is not archivable: \(error)")
@@ -173,12 +173,12 @@ extension `ECMA_376.Wordprocessing.Document Tests`.Test.`Edge Case` {
     }
 
     @Test func `a main part that is no document is refused by its root element`() throws {
-        var archive = ISO_21320.Archive()
+        var archive = ISO.`21320`.Archive()
         for entry in [
             (path: "_rels/.rels", content: `ECMA_376.Wordprocessing.Document Tests`.Test.main),
             (path: "word/document.xml", content: "<w:styles xmlns:w=\"urn:w\"/>"),
         ] {
-            do throws(ISO_21320.Archive.Error) {
+            do throws(ISO.`21320`.Archive.Error) {
                 try archive.add(path: entry.path, content: entry.content)
             } catch {
                 preconditionFailure("fixture entry \(entry.path) is not archivable: \(error)")

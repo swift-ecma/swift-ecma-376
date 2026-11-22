@@ -14,9 +14,9 @@ extension `ECMA_376.Package Tests` {
 
 extension `ECMA_376.Package Tests`.Test {
     static func package(_ parts: [(path: String, content: String)]) throws(ECMA_376.Package.Error) -> ECMA_376.Package {
-        var archive = ISO_21320.Archive()
+        var archive = ISO.`21320`.Archive()
         for part in parts {
-            do throws(ISO_21320.Archive.Error) {
+            do throws(ISO.`21320`.Archive.Error) {
                 try archive.add(path: part.path, content: part.content)
             } catch {
                 preconditionFailure("fixture entry \(part.path) is not archivable: \(error)")

@@ -51,9 +51,9 @@ extension `ECMA_376.Spreadsheet.Workbook Tests`.Test {
                         + related + shared + "</Relationships>"
                 ),
             ] + (strings.map { [(path: "xl/sharedStrings.xml", content: $0)] } ?? []) + parts
-        var archive = ISO_21320.Archive()
+        var archive = ISO.`21320`.Archive()
         for entry in entries {
-            do throws(ISO_21320.Archive.Error) {
+            do throws(ISO.`21320`.Archive.Error) {
                 try archive.add(path: entry.path, content: entry.content)
             } catch {
                 preconditionFailure("fixture entry \(entry.path) is not archivable: \(error)")
