@@ -7,8 +7,8 @@ extension ECMA_376.Part.Name {
     }
 
     public func resolve(_ target: String) throws(ECMA_376.Package.Error) -> ECMA_376.Part.Name {
-        do throws(RFC_3986.Error) {
-            return ECMA_376.Part.Name(try RFC_3986.URI(value).resolve(target).value)
+        do throws(IETF.RFC.`3986`.Error) {
+            return ECMA_376.Part.Name(try IETF.RFC.`3986`.URI(value).resolve(target).value)
         } catch {
             throw .target(target)
         }
