@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "ECMA 376 Spreadsheet", targets: ["ECMA 376 Spreadsheet"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-ecma/swift-ecma.git", branch: "main"),
         .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
         .package(url: "https://github.com/swift-iso/swift-iso-21320.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-3986.git", branch: "main"),
@@ -26,6 +27,7 @@ let package = Package(
         .target(
             name: "ECMA 376",
             dependencies: [
+                .product(name: "ECMA", package: "swift-ecma"),
                 .product(name: "Byte", package: "swift-byte"),
                 .product(name: "ISO 21320", package: "swift-iso-21320"),
                 .product(name: "RFC 3986", package: "swift-rfc-3986"),
